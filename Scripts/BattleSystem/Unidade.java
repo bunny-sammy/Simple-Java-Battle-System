@@ -1,3 +1,5 @@
+import javax.security.auth.x500.X500PrivateCredential;
+
 //Classe básica para inimigos e jogador
 public abstract class Unidade {
 
@@ -6,6 +8,7 @@ public abstract class Unidade {
     private int hp;
     private int atk;
     private int def;
+    public boolean defendendo;
 
     //Construtor
     public Unidade (String nome, int maxHp, int atk, int def) {
@@ -59,23 +62,27 @@ public abstract class Unidade {
 
     //Aumenta ou diminui o HP desta unidade
     public void ajustarHp (int x) {
+        if (this.defendendo) x /= 2;
         this.hp += x;
+        if (this.hp < 0) {
+            this.setHp(0);
+        }
     }
 
     //Aumenta ou diminui o HP de outra unidade
     public void atacar (Unidade alvo) {
         int formula = this.getAtk() * 2 - alvo.getDef();
-        alvo.ajustarHp(formula);
+        alvo.ajustarHp(-formula);
     }
 
     //Usa o turno para defender-se
     public void defender () {
-        //A implementar
+        this.defendendo = true;
     }
 
     //Checa se a unidade chegou em zero
-    public boolean estado () {
-        return (this.getHp() == 0);
+    public boolean morto () {
+        return (this.getHp() <= 0);
     }
 
 }

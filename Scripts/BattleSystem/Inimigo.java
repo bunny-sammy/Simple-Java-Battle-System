@@ -82,9 +82,4 @@ public class Inimigo extends Unidade {
         return sprite;
     }
 
-    //Função chamada a cada turno para decidir a ação da unidade
-    public void decidirAcao () {
-        //A implementar
-    }
-
 }
