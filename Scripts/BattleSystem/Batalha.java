@@ -33,11 +33,11 @@ public class Batalha {
         System.out.println(ANSI_RED + this.inimigo.getSprite() + ANSI_RESET);
         if (this.jogador.getItem() == null) {
             System.out.println(this.inimigo.getNome()
-                            + "            "
+                            + "              "
                             + this.jogador.getNome());
         } else {
             System.out.println(this.inimigo.getNome()
-                            + "            "
+                            + "              "
                             + this.jogador.getNome() + ANSI_GREEN + "(" + this.jogador.getItem().getNome() + ")" + ANSI_RESET);
         }
         System.out.println("Vida: " + ANSI_RED + this.inimigo.getHp() + "/" + this.inimigo.getMaxHp()
@@ -59,6 +59,7 @@ public class Batalha {
 
     public void iniciarBatalha () {
         logTexto.add(this.inimigo.getNome() + " se aproxima!");
+        this.inimigo.setHp(this.inimigo.getMaxHp());
         iniciarTurno();
     }
     
@@ -87,6 +88,8 @@ public class Batalha {
         if (acaoJ == 3) {
             menuEquipar(this.jogador.listarItens());
         } else if (acaoJ == 4) {
+            System.out.println("Teste");
+            acaoJ = entrada.nextInt();
             fimBatalha(2);
         }
     }
@@ -127,6 +130,8 @@ public class Batalha {
         
         if (itens.size() < 1) {
             System.out.println("Inventário vazio.");
+            System.out.println("Compre itens na loja entre lutas.");
+            entrada.nextLine();
             String vazio = entrada.nextLine();
             iniciarTurno();
         } else {
@@ -156,6 +161,8 @@ public class Batalha {
         this.inimigo.defendendo = false;
         if (this.inimigo.morto()) {
             //Vencer se o inimigo morreu
+            this.jogador.addKillCount(1);
+            this.jogador.addDinheiro(this.inimigo.getRecompensa());
             fimBatalha(0);
         } else if (this.jogador.morto()) {
             //Perder se o jogador morreu
@@ -172,9 +179,8 @@ public class Batalha {
         switch (resultado) {
             case 0:
                 System.out.println(ANSI_GREEN + "Você venceu!!" + ANSI_RESET);
-
-                System.out.println("Você recebeu " + this.inimigo.getRecompensa() + " Coin!");
-                this.jogador.addDinheiro(this.inimigo.getRecompensa());
+                System.out.println(this.jogador.getKillCount() + " inimigos derrotados.");
+                System.out.println("Você recebeu " + ANSI_YELLOW + this.inimigo.getRecompensa() + ANSI_RESET + " Coin!");
 
                 System.out.println("");
                 System.out.println("Continuar?");
@@ -184,10 +190,12 @@ public class Batalha {
                 String simOuNao = entrada.nextLine();
                 if (simOuNao.equals("S") || simOuNao.equals("s")) {
                     this.continuar = true;
-                } else {
+                } else if (simOuNao.equals("N") || simOuNao.equals("n")) {
                     this.continuar = false;
                     System.out.println("");
                     System.out.println("Tchau :(");
+                } else {
+                    fimBatalha(0);
                 }
                 break;
             case 1:
@@ -195,6 +203,7 @@ public class Batalha {
                 break;
             case 2:
                 System.out.println(ANSI_RED + "Você escapou..." + ANSI_RESET);
+                break;
         }
     }
 

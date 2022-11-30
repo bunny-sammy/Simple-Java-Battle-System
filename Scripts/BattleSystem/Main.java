@@ -35,23 +35,27 @@ public class Main {
                 System.out.println("Adquirido");
             }
         }
-        
+    
         System.out.println("");
         System.out.println("Selecione um item para comprar:");
         
         int comprar = in.nextInt();
-        Item comprado = itens.get(comprar - 1);
+        System.out.println("comprar");
         if (comprar > 0) {
+            Item comprado = itens.get(comprar - 1);
             if (jogador.getDinheiro() >= comprado.getPreco()) {
                 if (!jogador.listarItens().contains(comprado)) {
+                    jogador.addDinheiro(-comprado.getPreco());
                     jogador.addItem(comprado);
                 } else {
                     System.out.println("Você já tem este item.");
+                    in.nextLine();
                     String vazio = in.nextLine();
                     loja(jogador, itens);
                 }
             } else {
                 System.out.println("Você é " + ANSI_RED + "POBRE." + ANSI_RESET);
+                in.nextLine();
                 String vazio = in.nextLine();
                 loja(jogador, itens);
             }
@@ -59,7 +63,7 @@ public class Main {
     }
 
     public static void main (String[] args) {
-        Jogador jogador = new Jogador("Jogador", 250, 20, 30);
+        Jogador jogador = new Jogador("Jogador", 400, 20, 30);
         Random random = new Random();
         int randomMonstro = 0;
 
@@ -69,9 +73,10 @@ public class Main {
         monstros.add(new Inimigo ("Minhoquinha", 150, 30, 20, 2));
         monstros.add(new Inimigo("Caracool", 250, 35, 35, 3));
         monstros.add(new Inimigo("Aranha-ranha", 150, 50, 10, 4));
-        monstros.add(new Inimigo("Povo", 400, 20, 50, 5));
+        monstros.add(new Inimigo("Powovo", 400, 20, 50, 5));
 
         ArrayList<Item> lojaItens = new ArrayList<>();
+        lojaItens.add(new Item("Resturar", "Restaura 100% do HP do jogador para a próxima luta.", 0, 0, 120));
         lojaItens.add(new Item("Espada Leve", 15, 0, 50));
         lojaItens.add(new Item("Armadura Leve", 0, 15, 50));
         lojaItens.add(new Item("Espadão", 30, -10, 80));

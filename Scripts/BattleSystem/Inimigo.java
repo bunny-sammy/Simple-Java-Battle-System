@@ -19,7 +19,7 @@ public class Inimigo extends Battler {
         super(nome, maxHp, atk, def);
         this.tipo = tipo;
         criarSprite();
-        this.recompensa = 30;
+        this.recompensa = 50;
     }
 
     //Get e set

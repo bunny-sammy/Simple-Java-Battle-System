@@ -1,5 +1,3 @@
-import javax.security.auth.x500.X500PrivateCredential;
-
 //Classe básica para inimigos e jogador
 public abstract class Battler {
 
@@ -72,6 +70,7 @@ public abstract class Battler {
     //Aumenta ou diminui o HP de outra unidade
     public void atacar (Battler alvo) {
         int formula = this.getAtk() * 2 - alvo.getDef();
+        if (formula < 5) formula = 5;
         alvo.ajustarHp(-formula);
     }
 

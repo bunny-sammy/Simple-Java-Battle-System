@@ -7,6 +7,7 @@ public class Jogador extends Battler {
     private int atkBoost;
     private int defBoost;
     private int dinheiro;
+    private int killCount;
 
     //Construtor
     public Jogador (String nome, int maxHp, int atk, int def) {
@@ -14,6 +15,7 @@ public class Jogador extends Battler {
         this.equip = null;
         this.atkBoost = 0;
         this.defBoost = 0;
+        this.dinheiro = 50;
     }
 
     //Get e set dinheiro
@@ -27,6 +29,14 @@ public class Jogador extends Battler {
 
     public void addDinheiro (int x) {
         this.dinheiro += x;
+    }
+    
+    public int getKillCount () {
+        return this.killCount;
+    }
+
+    public void addKillCount (int x) {
+        this.killCount += x;
     }
 
      //Get e set item
