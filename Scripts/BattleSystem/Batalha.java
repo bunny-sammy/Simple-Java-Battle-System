@@ -31,9 +31,15 @@ public class Batalha {
     public void desenharTela () {
         System.out.println("");
         System.out.println(ANSI_RED + this.inimigo.getSprite() + ANSI_RESET);
-        System.out.println(this.inimigo.getNome()
-                         + "            "
-                         + this.jogador.getNome());
+        if (this.jogador.getItem() == null) {
+            System.out.println(this.inimigo.getNome()
+                            + "            "
+                            + this.jogador.getNome());
+        } else {
+            System.out.println(this.inimigo.getNome()
+                            + "            "
+                            + this.jogador.getNome() + ANSI_GREEN + "(" + this.jogador.getItem().getNome() + ")" + ANSI_RESET);
+        }
         System.out.println("Vida: " + ANSI_RED + this.inimigo.getHp() + "/" + this.inimigo.getMaxHp()
                           + ANSI_RESET + "        "
                           + "Vida: " + ANSI_GREEN + this.jogador.getHp() + "/" + this.jogador.getMaxHp() + ANSI_RESET);
@@ -74,11 +80,14 @@ public class Batalha {
         System.out.println("[1] Atacar");
         System.out.println("[2] Defender");
         System.out.println("[3] Equipar");
+        System.out.println("[4] Fugir");
         acaoJ = entrada.nextInt();
 
         //Equipar
         if (acaoJ == 3) {
             menuEquipar(this.jogador.listarItens());
+        } else if (acaoJ == 4) {
+            fimBatalha(2);
         }
     }
 
@@ -116,14 +125,20 @@ public class Batalha {
         System.out.println("INVENTÁRIO:");
         System.out.println("");
         
-        int itemIndice = 0;
-        for (Item item : itens) {
-            itemIndice++;
-            System.out.println("[" + itemIndice + "] " + item.getNome());
-            if (item.getDesc() != null) {
-                System.out.println("    " + item.getDesc());
+        if (itens.size() < 1) {
+            System.out.println("Inventário vazio.");
+            String vazio = entrada.nextLine();
+            iniciarTurno();
+        } else {
+            int itemIndice = 0;
+            for (Item item : itens) {
+                itemIndice++;
+                System.out.println("[" + itemIndice + "] " + item.getNome());
+                if (item.getDesc() != null) {
+                    System.out.println("    " + item.getDesc());
+                }
+                System.out.println("    ATK+: " + item.getAtk() + " DEF+: " + item.getDef());
             }
-            System.out.println("    ATK+: " + item.getAtk() + " DEF+: " + item.getDef());
         }
         
         System.out.println("");
@@ -141,10 +156,10 @@ public class Batalha {
         this.inimigo.defendendo = false;
         if (this.inimigo.morto()) {
             //Vencer se o inimigo morreu
-            fimBatalha(true);
+            fimBatalha(0);
         } else if (this.jogador.morto()) {
             //Perder se o jogador morreu
-            fimBatalha(false);
+            fimBatalha(1);
         } else {
             //Iniciar o próximo turno se não
             iniciarTurno ();
@@ -152,25 +167,34 @@ public class Batalha {
     }
 
     //Termina a batalha e checa se quer continuar
-    public void fimBatalha (boolean vitoria) {
+    public void fimBatalha (int resultado) {
         System.out.print(CLEAR_CONSOLE);
-        if (vitoria) {
-            System.out.println(ANSI_GREEN + "Você venceu!!" + ANSI_RESET);
-            System.out.println("");
-            System.out.println("Continuar?");
-            System.out.println("[S]im, estou confiante");
-            System.out.println("[N]ão, quero ir pra casa");
-            entrada.nextLine();
-            String simOuNao = entrada.nextLine();
-            if (simOuNao.equals("S") || simOuNao.equals("s")) {
-                this.continuar = true;
-            } else {
-                this.continuar = false;
+        switch (resultado) {
+            case 0:
+                System.out.println(ANSI_GREEN + "Você venceu!!" + ANSI_RESET);
+
+                System.out.println("Você recebeu " + this.inimigo.getRecompensa() + " Coin!");
+                this.jogador.addDinheiro(this.inimigo.getRecompensa());
+
                 System.out.println("");
-                System.out.println("Tchau :(");
-            }
-        } else {
-            System.out.println(ANSI_RED + "Você perdeu..." + ANSI_RESET);
+                System.out.println("Continuar?");
+                System.out.println("[S]im, estou confiante");
+                System.out.println("[N]ão, quero ir pra casa");
+                entrada.nextLine();
+                String simOuNao = entrada.nextLine();
+                if (simOuNao.equals("S") || simOuNao.equals("s")) {
+                    this.continuar = true;
+                } else {
+                    this.continuar = false;
+                    System.out.println("");
+                    System.out.println("Tchau :(");
+                }
+                break;
+            case 1:
+                System.out.println(ANSI_RED + "Você perdeu..." + ANSI_RESET);
+                break;
+            case 2:
+                System.out.println(ANSI_RED + "Você escapou..." + ANSI_RESET);
         }
     }
 

@@ -1,22 +1,34 @@
 import java.util.ArrayList;
 
-public class Inimigo extends Unidade {
+public class Inimigo extends Battler {
     
     private int tipo;
     private String sprite;
+    private int recompensa;
 
     //Construtor completo
+    public Inimigo (String nome, int maxHp, int atk, int def, int tipo, int recompensa) {
+        super(nome, maxHp, atk, def);
+        this.tipo = tipo;
+        criarSprite();
+        this.recompensa = recompensa;
+    }
+
+    //Construtor sem tipo de sprite
     public Inimigo (String nome, int maxHp, int atk, int def, int tipo) {
         super(nome, maxHp, atk, def);
         this.tipo = tipo;
         criarSprite();
+        this.recompensa = 30;
     }
 
-    //Construtor sem tipo de sprite
-    public Inimigo (String nome, int maxHp, int atk, int def) {
-        super(nome, maxHp, atk, def);
-        this.tipo = 0;
-        criarSprite();
+    //Get e set
+    public int getRecompensa () {
+        return this.recompensa;
+    }
+
+    public void setRecompensa (int x) {
+        this.recompensa = x;
     }
 
     //Cria uma sprite ASCII a ser impressa no console

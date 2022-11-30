@@ -1,17 +1,32 @@
 import java.util.ArrayList;
 
-public class Jogador extends Unidade {
+public class Jogador extends Battler {
     
     private Item equip;
     private ArrayList<Item> itens = new ArrayList<>();
     private int atkBoost;
     private int defBoost;
+    private int dinheiro;
 
     //Construtor
     public Jogador (String nome, int maxHp, int atk, int def) {
         super(nome, maxHp, atk, def);
+        this.equip = null;
         this.atkBoost = 0;
         this.defBoost = 0;
+    }
+
+    //Get e set dinheiro
+    public int getDinheiro () {
+        return this.dinheiro;
+    }
+
+    public void setDinheiro (int x) {
+        this.dinheiro = x;
+    }
+
+    public void addDinheiro (int x) {
+        this.dinheiro += x;
     }
 
      //Get e set item
