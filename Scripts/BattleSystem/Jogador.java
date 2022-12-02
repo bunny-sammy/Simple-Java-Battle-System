@@ -10,12 +10,12 @@ public class Jogador extends Battler {
     private int killCount;
 
     //Construtor
-    public Jogador (String nome, int maxHp, int atk, int def) {
+    public Jogador (String nome, int maxHp, int atk, int def, int dinheiro) {
         super(nome, maxHp, atk, def);
         this.equip = null;
         this.atkBoost = 0;
         this.defBoost = 0;
-        this.dinheiro = 50;
+        this.dinheiro = dinheiro;
     }
 
     //Get e set dinheiro

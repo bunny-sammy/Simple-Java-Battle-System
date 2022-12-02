@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-
 public class Inimigo extends Battler {
     
     private int tipo;

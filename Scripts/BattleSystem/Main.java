@@ -11,62 +11,18 @@ public class Main {
     public static final String CLEAR_CONSOLE = "\033[H\033[2J";
     public static Scanner in = new Scanner(System.in);
 
-    //Lojina :)
-    public static void loja(Jogador jogador, ArrayList<Item> itens) {
-        System.out.print(CLEAR_CONSOLE);
-        System.out.print(CLEAR_CONSOLE);
-        System.out.println("");
-        System.out.println("LOJA:");
-        System.out.println("Dinheiro: " + ANSI_YELLOW + jogador.getDinheiro() + ANSI_RESET + " Coin");
-        System.out.println("");
-        
-        int itemIndice = 0;
-        System.out.println("[0] Não comprar nada");
-        for (Item item : itens) {
-            itemIndice++;
-            System.out.println("[" + itemIndice + "] " + item.getNome());
-            if (item.getDesc() != null) {
-                System.out.println("    " + item.getDesc());
-            }
-            System.out.println("    ATK+: " + item.getAtk() + " DEF+: " + item.getDef());
-            if (!jogador.listarItens().contains(item)) {
-                System.out.println("Preço: " + ANSI_YELLOW + item.getPreco() + ANSI_RESET + " Coin");
-            } else {
-                System.out.println("Adquirido");
-            }
-        }
-    
-        System.out.println("");
-        System.out.println("Selecione um item para comprar:");
-        
-        int comprar = in.nextInt();
-        System.out.println("comprar");
-        if (comprar > 0) {
-            Item comprado = itens.get(comprar - 1);
-            if (jogador.getDinheiro() >= comprado.getPreco()) {
-                if (!jogador.listarItens().contains(comprado)) {
-                    jogador.addDinheiro(-comprado.getPreco());
-                    jogador.addItem(comprado);
-                } else {
-                    System.out.println("Você já tem este item.");
-                    in.nextLine();
-                    String vazio = in.nextLine();
-                    loja(jogador, itens);
-                }
-            } else {
-                System.out.println("Você é " + ANSI_RED + "POBRE." + ANSI_RESET);
-                in.nextLine();
-                String vazio = in.nextLine();
-                loja(jogador, itens);
-            }
-        }
+    //Método usado em todo o programa para esperar input do jogador
+    public static void esperarEnter () {
+        try{System.in.read();}
+        catch(Exception e){}
     }
 
     public static void main (String[] args) {
-        Jogador jogador = new Jogador("Jogador", 400, 20, 30);
+        Jogador jogador = new Jogador("Jogador", 400, 20, 30, 80);
         Random random = new Random();
         int randomMonstro = 0;
 
+        //Cria uma lista de monstros para escolher aleatoriamente como iniumigo
         ArrayList<Inimigo> monstros = new ArrayList<>();
         monstros.add(new Inimigo ("Formiga", 300, 40, 20, 0));
         monstros.add(new Inimigo("Tatataruga", 400, 20, 35, 1));
@@ -75,21 +31,38 @@ public class Main {
         monstros.add(new Inimigo("Aranha-ranha", 150, 50, 10, 4));
         monstros.add(new Inimigo("Powovo", 400, 20, 50, 5));
 
-        ArrayList<Item> lojaItens = new ArrayList<>();
-        lojaItens.add(new Item("Resturar", "Restaura 100% do HP do jogador para a próxima luta.", 0, 0, 120));
-        lojaItens.add(new Item("Espada Leve", 15, 0, 50));
-        lojaItens.add(new Item("Armadura Leve", 0, 15, 50));
-        lojaItens.add(new Item("Espadão", 30, -10, 80));
-        lojaItens.add(new Item("Armadura Pesada", -10, 30, 80));
-        lojaItens.add(new Item("Escudo", "Um escudo que pode ser usado ofensivamente.", 5, 10, 65));
+        //Cria itens que podem ser comprados pelo jogador
+        Loja.addItem(new Item("Restaurar", "Restaura 100% do HP do jogador para a próxima luta.", 0, 0, 120));
+        Loja.addItem(new Item("Espada Leve", 15, 0, 50));
+        Loja.addItem(new Item("Armadura Leve", 0, 15, 50));
+        Loja.addItem(new Item("Espadão", 30, -10, 80));
+        Loja.addItem(new Item("Armadura Pesada", -10, 30, 80));
+        Loja.addItem(new Item("Escudo", "Um escudo que pode ser usado ofensivamente.", 5, 10, 65));
 
+        //Tela de título
         System.out.print(CLEAR_CONSOLE);
-        System.out.println("Escolha o nome do jogador:");
+        System.out.println(ANSI_RED + """
+            ████████╗███████╗██████╗ ███╗   ███╗██╗███╗   ██╗ █████╗ ██╗     
+            ╚══██╔══╝██╔════╝██╔══██╗████╗ ████║██║████╗  ██║██╔══██╗██║     
+               ██║   █████╗  ██████╔╝██╔████╔██║██║██╔██╗ ██║███████║██║     
+               ██║   ██╔══╝  ██╔══██╗██║╚██╔╝██║██║██║╚██╗██║██╔══██║██║     
+               ██║   ███████╗██║  ██║██║ ╚═╝ ██║██║██║ ╚████║██║  ██║███████╗
+               ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝╚══════╝
+                                                                             
+                  ██████╗  █████╗ ████████╗████████╗██╗     ███████╗           
+                  ██╔══██╗██╔══██╗╚══██╔══╝╚══██╔══╝██║     ██╔════╝           
+                  ██████╔╝███████║   ██║      ██║   ██║     █████╗             
+                  ██╔══██╗██╔══██║   ██║      ██║   ██║     ██╔══╝             
+                  ██████╔╝██║  ██║   ██║      ██║   ███████╗███████╗           
+                  ╚═════╝ ╚═╝  ╚═╝   ╚═╝      ╚═╝   ╚══════╝╚══════╝       
+                """ + ANSI_RESET);
+        System.out.println("");
+        System.out.println("Digite seu nome:");
         jogador.setNome(in.nextLine());
 
         Batalha b = new Batalha(null, null);
         do {
-            loja(jogador, lojaItens);
+            Loja.loja(jogador);
             randomMonstro = random.nextInt(monstros.size());
             b = new Batalha (jogador, monstros.get(randomMonstro));
             b.iniciarBatalha();

@@ -14,12 +14,15 @@ public class Batalha {
     private Jogador jogador;
     private Inimigo inimigo;
     private boolean continuar;
-    //String logTexto;
+    private boolean fugir;
+
     ArrayList<String> logTexto = new ArrayList<>();
     Scanner entrada = new Scanner(System.in);
+    Scanner entradaEquip = new Scanner(System.in);
     Random random = new Random();
     int acaoJ = 0;
     int acaoI = 0;
+    String vazio;
 
     //Construtor
     public Batalha (Jogador jogador, Inimigo inimigo) {
@@ -82,16 +85,29 @@ public class Batalha {
         System.out.println("[2] Defender");
         System.out.println("[3] Equipar");
         System.out.println("[4] Fugir");
-        acaoJ = entrada.nextInt();
 
-        //Equipar
-        if (acaoJ == 3) {
-            menuEquipar(this.jogador.listarItens());
-        } else if (acaoJ == 4) {
-            System.out.println("Teste");
+        try {
             acaoJ = entrada.nextInt();
-            fimBatalha(2);
+        } catch (java.util.InputMismatchException e) {
+            //Exceção: Entrada não é int
+            logTexto.add("Ação inválida.");
+            entrada.nextLine();
+            iniciarTurno();
         }
+
+        if (acaoJ > 0 && acaoJ <= 4) {
+            if (acaoJ == 3) {
+                menuEquipar(this.jogador.listarItens());
+            } else if (acaoJ == 4) {
+                fugir = true;
+            }
+        } else {
+            //Exceção: Entrada fora do range esperado
+            logTexto.add("Ação inválida.");
+            entrada.nextLine();
+            iniciarTurno();
+        }
+        
     }
 
     //Função chamada para decidir a ação da unidade
@@ -132,9 +148,10 @@ public class Batalha {
             System.out.println("Inventário vazio.");
             System.out.println("Compre itens na loja entre lutas.");
             entrada.nextLine();
-            String vazio = entrada.nextLine();
+            vazio = entrada.nextLine();
             iniciarTurno();
         } else {
+            System.out.println("[0] Cancelar");
             int itemIndice = 0;
             for (Item item : itens) {
                 itemIndice++;
@@ -149,10 +166,31 @@ public class Batalha {
         System.out.println("");
         System.out.println("Selecione um item para equipar:");
 
-        int equipar = entrada.nextInt();
-        this.jogador.setItem(itens.get(equipar - 1));
-
-        logTexto.add(this.jogador.getNome() + " equipou " + this.jogador.getItem().getNome());
+        int equipar = 0;
+        try {
+            equipar = entradaEquip.nextInt();
+        } catch (java.util.InputMismatchException e) {
+            //Exceção: Entrada não é int
+            System.out.println("Entrada inválida.");
+            entradaEquip.nextLine();
+            vazio = entradaEquip.nextLine();
+            menuEquipar(itens);
+        }
+        
+        if (equipar <= itens.size()) {
+            if (equipar != 0) {
+                this.jogador.setItem(itens.get(equipar - 1));
+                logTexto.add(this.jogador.getNome() + " equipou " + this.jogador.getItem().getNome());
+            } else {
+                iniciarTurno();
+            }
+        } else {
+            //Exceção: Entrada fora do range esperado
+            System.out.println("Item inválido.");
+            entradaEquip.nextLine();
+            vazio = entradaEquip.nextLine();
+            menuEquipar(itens);
+        }
     }
 
     //Ao fim do turno checa se alguma unidade morreu
@@ -167,6 +205,9 @@ public class Batalha {
         } else if (this.jogador.morto()) {
             //Perder se o jogador morreu
             fimBatalha(1);
+        } else if (fugir) {
+            //Fugir caso o jogador escolha
+            fimBatalha(2);
         } else {
             //Iniciar o próximo turno se não
             iniciarTurno ();
@@ -182,6 +223,7 @@ public class Batalha {
                 System.out.println(this.jogador.getKillCount() + " inimigos derrotados.");
                 System.out.println("Você recebeu " + ANSI_YELLOW + this.inimigo.getRecompensa() + ANSI_RESET + " Coin!");
 
+                Main.esperarEnter();
                 System.out.println("");
                 System.out.println("Continuar?");
                 System.out.println("[S]im, estou confiante");
@@ -194,15 +236,18 @@ public class Batalha {
                     this.continuar = false;
                     System.out.println("");
                     System.out.println("Tchau :(");
+                    Main.esperarEnter();
                 } else {
                     fimBatalha(0);
                 }
                 break;
             case 1:
                 System.out.println(ANSI_RED + "Você perdeu..." + ANSI_RESET);
+                Main.esperarEnter();
                 break;
             case 2:
                 System.out.println(ANSI_RED + "Você escapou..." + ANSI_RESET);
+                Main.esperarEnter();
                 break;
         }
     }
