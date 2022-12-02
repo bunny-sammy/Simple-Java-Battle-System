@@ -1,3 +1,4 @@
+package battle;
 public class Item {
     
     private String nome;

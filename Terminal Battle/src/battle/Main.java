@@ -1,3 +1,4 @@
+package battle;
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Random;
@@ -18,7 +19,7 @@ public class Main {
     }
 
     public static void main (String[] args) {
-        Jogador jogador = new Jogador("Jogador", 400, 20, 30, 80);
+        Jogador jogador = new Jogador("Jogador", 400, 20, 30, 50);
         Random random = new Random();
         int randomMonstro = 0;
 

@@ -1,7 +1,6 @@
-import javax.security.auth.x500.X500PrivateCredential;
-
+package battle;
 //Classe básica para inimigos e jogador
-public abstract class Unidade {
+public abstract class Battler {
 
     private String nome;
     private int maxHp;
@@ -11,7 +10,7 @@ public abstract class Unidade {
     public boolean defendendo;
 
     //Construtor
-    public Unidade (String nome, int maxHp, int atk, int def) {
+    public Battler (String nome, int maxHp, int atk, int def) {
         this.nome = nome;
         this.maxHp = maxHp;
         this.hp = maxHp;//começa com HP cheio
@@ -70,8 +69,9 @@ public abstract class Unidade {
     }
 
     //Aumenta ou diminui o HP de outra unidade
-    public void atacar (Unidade alvo) {
+    public void atacar (Battler alvo) {
         int formula = this.getAtk() * 2 - alvo.getDef();
+        if (formula < 5) formula = 5;
         alvo.ajustarHp(-formula);
     }
 

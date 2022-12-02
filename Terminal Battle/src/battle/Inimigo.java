@@ -1,3 +1,4 @@
+package battle;
 public class Inimigo extends Battler {
     
     private int tipo;
